@@ -1,7 +1,7 @@
 ---
 title: "Alcohol vs Seat choice"
-author: "Your Name"
-date: "Fall 2020"
+author: "Aylin Torrres"
+date: "10/01/2024"
 output: html_document
 ---
 
@@ -14,8 +14,20 @@ require(tidyverse)
 require(tigerstats)
 davisdata <- read.csv(file="UCDavis.csv")
 ```
-## Our Goal is to answer this question Is there a difference between the alcohol consumed between the row
-## you choose to sit in??
+## Our Goal is to answer this question 
+Is there a difference between the alcohol consumed between the row
+you choose to sit in??
+
+#Method
+predict alcohol consumption based on where you sit.
+
+$h_0$: There is no difference between the alcohol consumed between the row you choosen to sit in?
+
+$h_A$: There is difference beyween the alcohol consumed between the row you choose to sit in?
+
+alcohol is numerical 
+seat is categorical
+Use file num~cat 
 
 ## Now with ggplot - first select the basic data
 
@@ -27,6 +39,7 @@ basicCN <- ggplot(davisdata,aes(y=alcohol,x=Seat))
 ```{r}
 basicCN + geom_boxplot()
 ```
+  This boxplot shows us that those who choose to sit in the back tend to drink more alcohol.
   
   
 ### get fancy  
@@ -34,11 +47,33 @@ basicCN + geom_boxplot()
 ```{r}
 basicCN + geom_boxplot(notch=TRUE,outlier.color = "red") + stat_boxplot(geom ='errorbar') + labs(title="Fancy notch boxplot \n with 2 lines")
 ```
+boxplot shows those who drink more alcohol sit in the back.
+
 
 ## Numerical Summarys 
 
+```{r}
+favstats(alcohol~Seat,data=ucdavis1)
+```
+The average of alcohol consumption for those in the back seat is 8.5 ounces.
+The average of alcohol consumption for those in the front is 1.7 ounces.
+The average of alcohol consumption for those in the middle is 3.3 ounces.
+
 ## Inferential Tests
+```{r}
+model1 <- aov(alcohol~Seat,data=davisdata)
+summary.aov(model1)
+```
+The p-value is 0.000116 which is lower than 0.05
+Thus, we reject the null hypothesis
+
+```{r}
+plot(TukeyHSD(model1))
+```
+The tukey shows us that the middle-front has no difference
+The middle-back does have a difference 
+The front-back does have a difference 
 
 ## Conclusions
-
+We conclude that those who sit in the back seats tend to drink more alcohol than those who choose to sit in the front and middle seats.The numerical results show us that those who sit in the back on average consume 8.5 ounces where those who sit in the front consume 1.7 and those in the middle consume 3.3 ounces. We found the p-value to be 0.000116 which is less than 0.05 which means we then rejct the null hypothesis as there is a diffrence in alcohol consumed based on were you sit.
 
